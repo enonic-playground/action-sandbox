@@ -5,3 +5,5 @@ set -e
 echo "Empty entrypoint"
 
 enonic --version
+
+enonic snapshot --help

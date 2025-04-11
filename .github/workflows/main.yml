@@ -1,4 +1,14 @@
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Remote URL to XP instance'
+        required: true
+        type: string
+        default: 'http://localhost:8080'
+
+env:
+  ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
 
 jobs:
   build:
