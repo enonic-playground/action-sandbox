@@ -31,6 +31,7 @@ runs:
     - name: 'Deploy apps'
       uses: docker://enonic/enonic-ci:7.15
       with:
+        entrypoint: ./entrypoint.sh
         args: bash -c "enonic --version"
       env:
         ENONIC_CLI_REMOTE_URL: 'http://localhost:4848'
