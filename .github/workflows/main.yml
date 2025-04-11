@@ -6,9 +6,14 @@ on:
         required: true
         type: string
         default: 'http://localhost:8080'
-
-env:
-  ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
+      username:
+        description: 'User name to XP instance'
+        required: true
+        type: string
+      password:
+        description: 'Password to XP instance'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -20,4 +25,7 @@ jobs:
         run: chmod +x entrypoint.sh
       - id: build-and-publish
         uses: enonic-playground/action-sandbox@main
-        
+        with:
+          url: ${{ inputs.url }}
+          username: ${{ inputs.username }}
+          password: ${{ inputs.password }}

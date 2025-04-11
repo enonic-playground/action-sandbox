@@ -32,6 +32,8 @@ runs:
       shell: bash
       env:
         ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
+        ENONIC_CLI_REMOTE_USER: ${{ inputs.username }}
+        ENONIC_CLI_REMOTE_PASS: ${{ inputs.password }}
 
 #    - name: 'Deploy apps'
 #      uses: docker://enonic/enonic-ci:7.15
