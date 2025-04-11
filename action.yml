@@ -36,7 +36,7 @@ runs:
         -e ENONIC_CLI_REMOTE_USER="${ENONIC_CLI_REMOTE_USER}" \
         -e ENONIC_CLI_REMOTE_PASS="${ENONIC_CLI_REMOTE_PASS}" \
         enonic/enonic-ci:7.15 \
-        ./entrypoint.sh
+        enonic app install --help
       shell: bash
       env:
         ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
