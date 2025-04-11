@@ -30,8 +30,6 @@ runs:
 
     - run: |
         docker run --rm \
-        -v "${{ github.workspace }}:/workspace" \
-        -w /workspace \
         -e ENONIC_CLI_REMOTE_URL="${ENONIC_CLI_REMOTE_URL}" \
         -e ENONIC_CLI_REMOTE_USER="${ENONIC_CLI_REMOTE_USER}" \
         -e ENONIC_CLI_REMOTE_PASS="${ENONIC_CLI_REMOTE_PASS}" \
