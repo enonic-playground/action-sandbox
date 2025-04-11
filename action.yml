@@ -28,10 +28,13 @@ runs:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
 
-    - name: 'Deploy apps'
-      uses: docker://enonic/enonic-ci:7.15
-      with:
-        entrypoint: ./entrypoint.sh
-        args: bash -c "enonic --version"
-      env:
-        ENONIC_CLI_REMOTE_URL: 'http://localhost:4848'
+    - run: docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace enonic/enonic-ci:7.15 ./entrypoint.sh
+      shell: bash
+
+#    - name: 'Deploy apps'
+#      uses: docker://enonic/enonic-ci:7.15
+#      with:
+#        entrypoint: ./entrypoint.sh
+#        args: bash -c "enonic --version"
+#      env:
+#        ENONIC_CLI_REMOTE_URL: 'http://localhost:4848'
