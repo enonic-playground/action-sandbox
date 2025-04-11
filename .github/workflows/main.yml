@@ -1,0 +1,9 @@
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - id: build-and-publish
+        uses: enonic-playground/action-sandbox@main
+        
