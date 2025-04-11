@@ -4,6 +4,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Make entrypoint executable
+        run: chmod +x entrypoint.sh
       - id: build-and-publish
         uses: enonic-playground/action-sandbox@main
         
