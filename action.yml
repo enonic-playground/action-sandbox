@@ -31,16 +31,15 @@ runs:
 
     - id: step2
       name: "Copy credentials file"
+#      env:
+#        CRED_FILE: ${{ inputs.cred_file }}
       run: |
         if [ -n "${{ inputs.cred_file }}" ]; then
           echo "Using Service Account to authenticate with the server"
           SERVICE_ACCOUNT_KEY_FILE=$(mktemp /tmp/service-account-XXXXXX.json)
-          echo -n "${CRED_FILE}" > "${SERVICE_ACCOUNT_KEY_FILE}"
-          {
-              echo "ENONIC_CLI_CRED_FILE<<EOF"
-              echo "${SERVICE_ACCOUNT_KEY_FILE}"
-              echo "EOF"
-          } >> $GITHUB_ENV
+          echo -n "${{ inputs.cred_file }}" > "${SERVICE_ACCOUNT_KEY_FILE}"
+        
+          echo "ENONIC_CLI_CRED_FILE=${SERVICE_ACCOUNT_KEY_FILE}" >> $GITHUB_ENV
         fi
       shell: bash
 
