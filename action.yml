@@ -25,10 +25,25 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+    - id: step1
+      run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+
+    - id: step2
+      name: "Copy credentials file"
+      run: |
+        if [ -n "${{ inputs.cred_file }}" ]; then
+          echo "Using Service Account to authenticate with the server"
+          SERVICE_ACCOUNT_KEY_FILE=$(mktemp /tmp/service-account-XXXXXX.json)
+          echo -n "${CRED_FILE}" > "${SERVICE_ACCOUNT_KEY_FILE}"
+         
+          echo "ENONIC_CLI_CRED_FILE=${SERVICE_ACCOUNT_KEY_FILE}" >> $GITHUB_ENV
+        fi
       shell: bash
 
     - run: |
+        echo "ENONIC_CLI_CRED_FILE is: $ENONIC_CLI_CRED_FILE"
+        
         docker run --rm \
         -e ENONIC_CLI_REMOTE_URL="${ENONIC_CLI_REMOTE_URL}" \
         -e ENONIC_CLI_REMOTE_USER="${ENONIC_CLI_REMOTE_USER}" \
