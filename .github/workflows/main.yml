@@ -14,10 +14,6 @@ on:
         description: 'Password to XP instance'
         required: false
         type: string
-      cred_file:
-        description: 'A service account key represented as a JSON string, containing the properties "algorithm", "kid", "principalKey", and "privateKey", used to generate a JWT token for authentication'
-        required: false
-        type: string
 
 jobs:
   build:
@@ -33,4 +29,4 @@ jobs:
           url: ${{ inputs.url }}
           username: ${{ inputs.username }}
           password: ${{ inputs.password }}
-          cred_file: ${{ inputs.cred_file }}
+          cred_file: ${{ secrets.SA_CRED_FILE }}
