@@ -36,8 +36,11 @@ runs:
           echo "Using Service Account to authenticate with the server"
           SERVICE_ACCOUNT_KEY_FILE=$(mktemp /tmp/service-account-XXXXXX.json)
           echo -n "${CRED_FILE}" > "${SERVICE_ACCOUNT_KEY_FILE}"
-         
-          echo "ENONIC_CLI_CRED_FILE=${SERVICE_ACCOUNT_KEY_FILE}" >> $GITHUB_ENV
+          {
+              echo "ENONIC_CLI_CRED_FILE<<EOF"
+              echo "${SERVICE_ACCOUNT_KEY_FILE}"
+              echo "EOF"
+          } >> $GITHUB_ENV
         fi
       shell: bash
 
