@@ -8,11 +8,11 @@ on:
         default: 'http://localhost:8080'
       username:
         description: 'User name to XP instance'
-        required: true
+        required: false
         type: string
       password:
         description: 'Password to XP instance'
-        required: true
+        required: false
         type: string
       cred_file:
         description: 'A service account key represented as a JSON string, containing the properties "algorithm", "kid", "principalKey", and "privateKey", used to generate a JWT token for authentication'
@@ -33,3 +33,4 @@ jobs:
           url: ${{ inputs.url }}
           username: ${{ inputs.username }}
           password: ${{ inputs.password }}
+          cred_file: ${{ inputs.cred_file }}
