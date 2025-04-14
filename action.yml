@@ -75,7 +75,6 @@ runs:
         if [ -z "$result" ]; then
           echo "JAR file not found at '$jar_path'"
           result="./build/libs/chuck.jar"
-#          exit 1
         fi
 
         echo "app_jar=$result" >> "$GITHUB_OUTPUT"
