@@ -10,4 +10,4 @@ echo "APP_JAR_FILE: ${APP_JAR}"
 
 enonic --version
 
-enonic app install --file ${APP_JAR}
+enonic app install --file ${APP_JAR:-./build/libs/*.jar}
