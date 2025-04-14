@@ -66,7 +66,8 @@ runs:
     - id: step3
       name: "Resolve app jar file"
       run: |
-        echo "app_jar=$(find . -wholename "${inputs.app_jar:-"./build/libs/chuck.jar"}")" >> $GITHUB_OUTPUT
+        jar_path="${inputs.app_jar:-./build/libs/chuck.jar}"
+        echo "app_jar=$(find . -wholename "$jar_path")" >> $GITHUB_OUTPUT
       shell: bash
 
     - run: |
