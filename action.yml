@@ -69,8 +69,15 @@ runs:
         APP_JAR_INPUT: ${{ inputs.app_jar }}
       run: |
         jar_path="${APP_JAR_INPUT:-./build/libs/chuck.jar}"
-        echo "jar_path is: $jar_path"
-        echo "app_jar=$(find . -wholename "$jar_path")" >> "$GITHUB_OUTPUT"
+        
+        result=$(find . -wholename "$jar_path")
+
+        if [ -z "$result" ]; then
+          echo "JAR file not found at '$jar_path'"
+          result="./build/libs/chuck.jar"
+        fi
+        
+        echo "app_jar=$result" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - run: |
