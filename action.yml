@@ -69,7 +69,7 @@ runs:
         APP_JAR_INPUT: ${{ inputs.app_jar }}
       run: |
         jar_path="${APP_JAR_INPUT:-./build/libs/chuck.jar}"
-        echo "app_jar=$(find . -wholename "$jar_path")" >> $GITHUB_OUTPUT
+        echo "app_jar=$(find . -wholename "$jar_path")" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - run: |
