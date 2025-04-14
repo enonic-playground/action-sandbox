@@ -4,6 +4,9 @@ inputs:
   url:
     description: 'URL to XP instance'
     required: true
+  http_proxy_url:
+    description: 'URL of proxy server to use'
+    required: false
   username:
     description: 'user name'
     required: false
@@ -22,6 +25,10 @@ inputs:
   app_jar:
     description: 'Path and name of the app to be deployed'
     required: false
+outputs:
+  app_jar:
+    value: ${{ steps.step3.outputs.app_jar }}
+    description: "Resolved path to the app jar file"
 runs:
   using: "composite"
   steps:
@@ -33,6 +40,8 @@ runs:
       name: "Copy credentials file"
       env:
         CRED_FILE: ${{ inputs.cred_file }}
+        CLIENT_KEY: ${{ inputs.client_key }}
+        CLIENT_CERT: ${{ inputs.client_cert }}
       run: |
         if [ -n "$CRED_FILE" ]; then
           echo "Using Service Account to authenticate with the server"
@@ -41,15 +50,35 @@ runs:
         
           echo "ENONIC_CLI_CRED_FILE=${SERVICE_ACCOUNT_KEY_FILE}" >> $GITHUB_ENV
         fi
+        
+        if [ "$CLIENT_KEY" != "" ] && [ "$CLIENT_CERT" != "" ]; then
+          echo "Using mTLS to establish secure connection with the server"
+          KEY=$(mktemp /tmp/key.XXXXXX)
+          CERT=$(mktemp /tmp/crt.XXXXXX)        
+          echo -n "${CLIENT_KEY}" > "${KEY}"
+          echo -n "${CLIENT_CERT}" > "${CERT}"
+        
+          echo "ENONIC_CLI_CLIENT_KEY=${KEY}" >> $GITHUB_ENV
+          echo "ENONIC_CLI_CLIENT_CERT=${CERT}" >> $GITHUB_ENV
+        fi
+      shell: bash
+
+    - id: step3
+      name: "Resolve app jar file"
+      run: |
+        echo "app_jar=$(find . -wholename "${inputs.app_jar:-"./build/libs/chuck.jar"}")" >> $GITHUB_OUTPUT
       shell: bash
 
     - run: |
         echo "ENONIC_CLI_CRED_FILE is: $ENONIC_CLI_CRED_FILE"
         
+        echo "App File: ${{ steps.step3.outputs.app_jar }}"
+        
         docker run --rm \
         -e ENONIC_CLI_REMOTE_URL="${ENONIC_CLI_REMOTE_URL}" \
         -e ENONIC_CLI_REMOTE_USER="${ENONIC_CLI_REMOTE_USER}" \
         -e ENONIC_CLI_REMOTE_PASS="${ENONIC_CLI_REMOTE_PASS}" \
+        -e ENONIC_CLI_HTTP_PROXY="${ENONIC_CLI_HTTP_PROXY}" \
         enonic/enonic-ci:7.15 \
         enonic app install --help
       shell: bash
@@ -57,11 +86,4 @@ runs:
         ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
         ENONIC_CLI_REMOTE_USER: ${{ inputs.username }}
         ENONIC_CLI_REMOTE_PASS: ${{ inputs.password }}
-
-#    - name: 'Deploy apps'
-#      uses: docker://enonic/enonic-ci:7.15
-#      with:
-#        entrypoint: ./entrypoint.sh
-#        args: bash -c "enonic --version"
-#      env:
-#        ENONIC_CLI_REMOTE_URL: 'http://localhost:4848'
+        ENONIC_CLI_HTTP_PROXY: ${{ inputs.http_proxy_url }}
