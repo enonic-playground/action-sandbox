@@ -63,38 +63,45 @@ runs:
         fi
       shell: bash
 
-    - id: step3
-      name: "Resolve app jar file"
-      env:
-        APP_JAR_INPUT: ${{ inputs.app_jar }}
-      run: |
-        jar_path="${APP_JAR_INPUT:-./build/libs/chuck.jar}"
-        
-        result=$(find . -wholename "$jar_path")
+#    - id: step3
+#      name: "Resolve app jar file"
+#      env:
+#        APP_JAR_INPUT: ${{ inputs.app_jar }}
+#      run: |
+#        jar_path="${APP_JAR_INPUT:-./build/libs/chuck.jar}"
+#
+#        result=$(find . -wholename "$jar_path")
+#
+#        if [ -z "$result" ]; then
+#          echo "JAR file not found at '$jar_path'"
+#          exit 1
+#        fi
+#
+#        echo "app_jar=$result" >> "$GITHUB_OUTPUT"
+#      shell: bash
 
-        if [ -z "$result" ]; then
-          echo "JAR file not found at '$jar_path'"
-          result="./build/libs/chuck.jar"
-        fi
-        
-        echo "app_jar=$result" >> "$GITHUB_OUTPUT"
-      shell: bash
-
-    - run: |
-        echo "ENONIC_CLI_CRED_FILE is: $ENONIC_CLI_CRED_FILE"
-        
-        echo "App File: ${{ steps.step3.outputs.app_jar }}"
-        
-        docker run --rm \
-        -e ENONIC_CLI_REMOTE_URL="${ENONIC_CLI_REMOTE_URL}" \
-        -e ENONIC_CLI_REMOTE_USER="${ENONIC_CLI_REMOTE_USER}" \
-        -e ENONIC_CLI_REMOTE_PASS="${ENONIC_CLI_REMOTE_PASS}" \
-        -e ENONIC_CLI_HTTP_PROXY="${ENONIC_CLI_HTTP_PROXY}" \
-        enonic/enonic-ci:7.15 \
-        enonic app install --help
-      shell: bash
+    - uses: docker://enonic/enonic-ci:7.15
+      with:
+        entrypoint: ./entrypoint.sh
       env:
         ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
-        ENONIC_CLI_REMOTE_USER: ${{ inputs.username }}
-        ENONIC_CLI_REMOTE_PASS: ${{ inputs.password }}
         ENONIC_CLI_HTTP_PROXY: ${{ inputs.http_proxy_url }}
+
+#    - run: |
+#        echo "ENONIC_CLI_CRED_FILE is: $ENONIC_CLI_CRED_FILE"
+#
+#        echo "App File: ${{ steps.step3.outputs.app_jar }}"
+#
+#        docker run --rm \
+#        -e ENONIC_CLI_REMOTE_URL="${ENONIC_CLI_REMOTE_URL}" \
+#        -e ENONIC_CLI_REMOTE_USER="${ENONIC_CLI_REMOTE_USER}" \
+#        -e ENONIC_CLI_REMOTE_PASS="${ENONIC_CLI_REMOTE_PASS}" \
+#        -e ENONIC_CLI_HTTP_PROXY="${ENONIC_CLI_HTTP_PROXY}" \
+#        enonic/enonic-ci:7.15 \
+#        enonic app install --help
+#      shell: bash
+#      env:
+#        ENONIC_CLI_REMOTE_URL: ${{ inputs.url }}
+#        ENONIC_CLI_REMOTE_USER: ${{ inputs.username }}
+#        ENONIC_CLI_REMOTE_PASS: ${{ inputs.password }}
+#        ENONIC_CLI_HTTP_PROXY: ${{ inputs.http_proxy_url }}
