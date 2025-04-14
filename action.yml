@@ -63,6 +63,24 @@ runs:
         fi
       shell: bash
 
+    - id: step3
+      name: "Resolve app jar file"
+      env:
+        APP_JAR_INPUT: ${{ inputs.app_jar }}
+      run: |
+        jar_path="${APP_JAR_INPUT:-./build/libs/*.jar}"
+
+        result=$(find . -wholename "$jar_path")
+
+        if [ -z "$result" ]; then
+          echo "JAR file not found at '$jar_path'"
+          result="./build/libs/chuck.jar"
+#          exit 1
+        fi
+
+        echo "app_jar=$result" >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: Make entrypoint executable
       run: chmod +x entrypoint.sh
       shell: bash
@@ -75,3 +93,4 @@ runs:
         ENONIC_CLI_HTTP_PROXY: ${{ inputs.http_proxy_url }}
         ENONIC_CLI_REMOTE_USER: ${{ inputs.username }}
         ENONIC_CLI_REMOTE_PASS: ${{ inputs.password }}
+        APP_JAR: ${{ steps.step3.outputs.app_jar }}

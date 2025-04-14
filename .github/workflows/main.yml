@@ -5,7 +5,7 @@ on:
         description: 'Remote URL to XP instance'
         required: true
         type: string
-        default: 'http://localhost:8080'
+        default: 'http://localhost:4848'
       http_proxy_url:
         description: 'URL of proxy server to use'
         required: false
@@ -25,9 +25,10 @@ jobs:
         uses: enonic-playground/action-sandbox@main
         with:
           url: ${{ inputs.url }}
+          http_proxy_url: ${{ inputs.http_proxy_url }}
           app_jar: ${{ inputs.app_jar }}
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
           cred_file: ${{ secrets.SA_CRED_FILE }}
-#          client_key: ${{ secrets.DEPLOY_CLIENT_KEY }}
-#          client_cert: ${{ secrets.DEPLOY_CLIENT_CERT }}
+          client_key: ${{ secrets.DEPLOY_CLIENT_KEY }}
+          client_cert: ${{ secrets.DEPLOY_CLIENT_CERT }}
