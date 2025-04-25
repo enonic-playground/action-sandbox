@@ -28,16 +28,21 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - id: step1
+      run: echo "${{ github.action_path }}"
+      shell: bash
+
     - id: step2
       name: "Copy credentials file"
       env:
+        CRED_FILE: ${{ inputs.cred_file }}
         CLIENT_KEY: ${{ inputs.client_key }}
         CLIENT_CERT: ${{ inputs.client_cert }}
       run: |
-        if [ -n "${{ inputs.cred_file }}" ]; then
+        if [ -n "$CRED_FILE" ]; then
           echo "Using Service Account to authenticate with the server"
           SERVICE_ACCOUNT_KEY_FILE=$(mktemp /tmp/service-account-XXXXXX.json)
-          echo -n "${{ inputs.cred_file }}" > "${SERVICE_ACCOUNT_KEY_FILE}"
+          echo -n "$CRED_FILE" > "${SERVICE_ACCOUNT_KEY_FILE}"
         
           echo "ENONIC_CLI_CRED_FILE=${SERVICE_ACCOUNT_KEY_FILE}" >> $GITHUB_ENV
         fi
@@ -52,7 +57,10 @@ runs:
           echo "ENONIC_CLI_CLIENT_KEY=${KEY}" >> $GITHUB_ENV
           echo "ENONIC_CLI_CLIENT_CERT=${CERT}" >> $GITHUB_ENV
         fi
-        echo "$PWD"
+      shell: bash
+
+    - id: step1
+      run: echo "$PWD"
       shell: bash
 
     - uses: docker://enonic/enonic-ci:7.15
@@ -63,4 +71,3 @@ runs:
         ENONIC_CLI_HTTP_PROXY: ${{ inputs.http_proxy_url }}
         ENONIC_CLI_REMOTE_USER: ${{ inputs.username }}
         ENONIC_CLI_REMOTE_PASS: ${{ inputs.password }}
-        APP_JAR: ${{ inputs.app_jar }}
