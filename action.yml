@@ -52,6 +52,7 @@ runs:
           echo "ENONIC_CLI_CLIENT_KEY=${KEY}" >> $GITHUB_ENV
           echo "ENONIC_CLI_CLIENT_CERT=${CERT}" >> $GITHUB_ENV
         fi
+        echo "$PWD"
       shell: bash
 
     - uses: docker://enonic/enonic-ci:7.15
