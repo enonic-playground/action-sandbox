@@ -60,7 +60,9 @@ runs:
       shell: bash
 
     - id: step3
-      run: echo "$PWD"
+      run: | 
+      echo "$PWD"
+      ls -la
       shell: bash
 
     - uses: docker://enonic/enonic-ci:7.15
