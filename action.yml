@@ -59,7 +59,7 @@ runs:
         fi
       shell: bash
 
-    - id: step1
+    - id: step3
       run: echo "$PWD"
       shell: bash
 
